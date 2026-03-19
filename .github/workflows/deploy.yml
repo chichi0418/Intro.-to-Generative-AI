@@ -19,11 +19,11 @@ jobs:
           node-version: '20'
 
       - name: Install client deps
-        working-directory: client
+        working-directory: hw1/client
         run: npm install
 
       - name: Build
-        working-directory: client
+        working-directory: hw1/client
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
         run: npm run build
@@ -32,4 +32,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./client/dist
+          publish_dir: ./hw1/client/dist
