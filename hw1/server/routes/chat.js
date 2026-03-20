@@ -3,6 +3,7 @@ const router = express.Router();
 const openaiProvider = require('../providers/openai');
 const anthropicProvider = require('../providers/anthropic');
 const googleProvider = require('../providers/google');
+const xaiProvider = require('../providers/xai');
 
 router.post('/', async (req, res) => {
   const { model, messages, systemPrompt, temperature, topP, maxTokens } = req.body;
@@ -24,6 +25,8 @@ router.post('/', async (req, res) => {
       await anthropicProvider.streamChat(params, res);
     } else if (model.startsWith('gemini-')) {
       await googleProvider.streamChat(params, res);
+    } else if (model.startsWith('grok-')) {
+      await xaiProvider.streamChat(params, res);
     } else {
       res.write(`data: ${JSON.stringify({ error: 'Unknown model prefix' })}\n\n`);
       res.end();

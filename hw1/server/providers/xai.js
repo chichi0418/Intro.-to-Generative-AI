@@ -2,7 +2,10 @@ const OpenAI = require('openai');
 
 let client;
 function getClient() {
-  if (!client) client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  if (!client) client = new OpenAI({
+    apiKey: process.env.X_API_KEY,
+    baseURL: 'https://api.x.ai/v1',
+  });
   return client;
 }
 
@@ -14,21 +17,17 @@ async function streamChat({ messages, systemPrompt, model, temperature, topP, ma
     builtMessages.push({ role: 'system', content: systemPrompt });
   }
 
-  // Keep last 20 messages for context
   const recent = messages.slice(-20);
   for (const m of recent) {
     builtMessages.push({ role: m.role, content: m.content });
   }
 
-  const isGpt5 = model.startsWith('gpt-5');
   const stream = await client.chat.completions.create({
     model,
     messages: builtMessages,
     temperature: temperature ?? 1,
     top_p: topP ?? 1,
-    ...(isGpt5
-      ? { max_completion_tokens: maxTokens ?? 2048 }
-      : { max_tokens: maxTokens ?? 2048 }),
+    max_tokens: maxTokens ?? 2048,
     stream: true,
   });
 

@@ -63,7 +63,7 @@ export function Slider({ label, value, min, max, step, decimals = 2, onChange }:
     <div className="px-4 py-3">
       {/* Label + value box */}
       <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-medium" style={{ color: '#e3e3e3' }}>{label}</span>
+        <span className="text-xs font-medium" style={{ color: '#ededef' }}>{label}</span>
 
         {editing ? (
           <input
@@ -78,15 +78,15 @@ export function Slider({ label, value, min, max, step, decimals = 2, onChange }:
               if (e.key === 'Escape') setEditing(false);
             }}
             className="w-14 text-center text-xs rounded-lg px-2 py-1 outline-none font-mono"
-            style={{ background: '#1b1c20', color: '#e3e3e3', border: '1px solid #8ab4f8', caretColor: '#8ab4f8' }}
+            style={{ background: 'rgba(255,255,255,0.05)', color: '#ededef', border: '1px solid rgba(138,180,248,0.5)', caretColor: '#8ab4f8' }}
           />
         ) : (
           <button
             onClick={startEdit}
             className="text-xs rounded-lg px-2.5 py-1 font-mono transition-colors"
-            style={{ background: '#2d2e33', color: '#e3e3e3', minWidth: '3rem', textAlign: 'center' }}
-            onMouseEnter={e => (e.currentTarget.style.background = '#3c3f4a')}
-            onMouseLeave={e => (e.currentTarget.style.background = '#2d2e33')}
+            style={{ background: 'rgba(255,255,255,0.06)', color: '#ededef', minWidth: '3rem', textAlign: 'center' }}
+            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.1)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.06)')}
           >
             {value.toFixed(decimals)}
           </button>
@@ -104,12 +104,12 @@ export function Slider({ label, value, min, max, step, decimals = 2, onChange }:
       >
       <div
         className="relative w-full rounded-full"
-        style={{ height: 5, background: '#45474e', cursor: dragging ? 'grabbing' : 'pointer' }}
+        style={{ height: 5, background: 'rgba(255,255,255,0.12)', cursor: dragging ? 'grabbing' : 'pointer' }}
       >
         {/* Fill */}
         <div
           className="absolute left-0 top-0 h-full rounded-full"
-          style={{ width: `${percent}%`, background: '#9aa0a6' }}
+          style={{ width: `${percent}%`, background: '#8ab4f8' }}
         />
         {/* Thumb halo */}
         <div
