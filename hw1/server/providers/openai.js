@@ -1,8 +1,13 @@
 const OpenAI = require('openai');
 
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+let client;
+function getClient() {
+  if (!client) client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  return client;
+}
 
 async function streamChat({ messages, systemPrompt, model, temperature, topP, maxTokens }, res) {
+  const client = getClient();
   const builtMessages = [];
 
   if (systemPrompt) {

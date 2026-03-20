@@ -1,8 +1,13 @@
 const Anthropic = require('@anthropic-ai/sdk');
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+let _client;
+function getClient() {
+  if (!_client) _client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  return _client;
+}
 
 async function streamChat({ messages, systemPrompt, model, temperature, topP, maxTokens }, res) {
+  const client = getClient();
   // Keep last 20 messages for context
   const recent = messages.slice(-20);
   const builtMessages = recent.map(m => ({ role: m.role, content: m.content }));
