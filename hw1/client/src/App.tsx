@@ -167,8 +167,6 @@ function App() {
             onEditMessage={(index, newContent) => editAndResend(index, newContent, settings)}
             onRegenerate={handleRegenerate}
             onRetry={handleRetry}
-            sidebarOpen={sidebarOpen}
-            onToggleSidebar={() => setSidebarOpen(v => !v)}
             leftSidebarOpen={leftSidebarOpen}
             onToggleLeftSidebar={() => setLeftSidebarOpen(v => !v)}
           />

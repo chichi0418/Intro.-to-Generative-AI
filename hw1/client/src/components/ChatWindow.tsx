@@ -8,8 +8,6 @@ interface Props {
   onEditMessage: (index: number, newContent: string) => void;
   onRegenerate: (index: number) => void;
   onRetry: () => void;
-  sidebarOpen: boolean;
-  onToggleSidebar: () => void;
   leftSidebarOpen: boolean;
   onToggleLeftSidebar: () => void;
 }
@@ -146,7 +144,7 @@ function TableOfContents({ messages, scrollRef }: {
   );
 }
 
-export function ChatWindow({ messages, error, onEditMessage, onRegenerate, onRetry, sidebarOpen, onToggleSidebar, leftSidebarOpen, onToggleLeftSidebar }: Props) {
+export function ChatWindow({ messages, error, onEditMessage, onRegenerate, onRetry, leftSidebarOpen, onToggleLeftSidebar }: Props) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
