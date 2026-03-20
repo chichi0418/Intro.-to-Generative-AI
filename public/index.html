@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Intro. to Generative AI</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: #07070a;
+      color: #e3e3e3;
+      font-family: 'Google Sans', 'Inter', system-ui, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      overflow-x: hidden;
+    }
+
+    /* Ambient blobs */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .blob-1 { width: 500px; height: 500px; top: -120px; left: -100px; background: radial-gradient(circle, rgba(100,80,200,0.18) 0%, transparent 70%); }
+    .blob-2 { width: 400px; height: 400px; bottom: -80px; right: -80px; background: radial-gradient(circle, rgba(30,140,255,0.14) 0%, transparent 70%); }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 720px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #8ab4f8;
+      background: rgba(138,180,248,0.08);
+      border: 1px solid rgba(138,180,248,0.2);
+      border-radius: 99px;
+      padding: 4px 12px;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: clamp(1.8rem, 5vw, 2.6rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #ededef;
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+    }
+
+    h1 span { color: #8ab4f8; }
+
+    .subtitle {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.35);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.2s, background 0.2s, transform 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .card:hover:not(.disabled) {
+      border-color: rgba(138,180,248,0.35);
+      background: rgba(138,180,248,0.06);
+      transform: translateY(-2px);
+    }
+
+    .card.disabled {
+      cursor: default;
+      opacity: 0.5;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .hw-badge {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #8ab4f8;
+      background: rgba(138,180,248,0.1);
+      border: 1px solid rgba(138,180,248,0.2);
+      border-radius: 6px;
+      padding: 3px 8px;
+    }
+
+    .status-badge {
+      font-size: 11px;
+      font-weight: 500;
+      border-radius: 6px;
+      padding: 3px 8px;
+    }
+    .status-live { color: #34a853; background: rgba(52,168,83,0.1); border: 1px solid rgba(52,168,83,0.2); }
+    .status-wip  { color: #fbbc04; background: rgba(251,188,4,0.08); border: 1px solid rgba(251,188,4,0.15); }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #ededef;
+    }
+
+    .card-desc {
+      font-size: 0.83rem;
+      color: rgba(255,255,255,0.4);
+      line-height: 1.6;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      color: rgba(138,180,248,0.7);
+      margin-top: auto;
+    }
+
+    .card.disabled .card-footer { color: rgba(255,255,255,0.2); }
+
+    footer {
+      margin-top: 3rem;
+      text-align: center;
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.15);
+    }
+  </style>
+</head>
+<body>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <div class="container">
+    <header>
+      <div class="tag">NYCU &nbsp;·&nbsp; Spring 2026</div>
+      <h1>Intro. to <span>Generative AI</span></h1>
+      <p class="subtitle">Homework Projects</p>
+    </header>
+
+    <div class="grid">
+      <a href="./hw1/" class="card">
+        <div class="card-header">
+          <span class="hw-badge">HW 01</span>
+          <span class="status-badge status-live">Live</span>
+        </div>
+        <div class="card-title">Build Your Own ChatGPT</div>
+        <p class="card-desc">
+          Multi-provider LLM chat app with streaming, conversation history, system instructions, and custom parameters.
+        </p>
+        <div class="card-footer">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Open app
+        </div>
+      </a>
+
+      <div class="card disabled">
+        <div class="card-header">
+          <span class="hw-badge">HW 02</span>
+          <span class="status-badge status-wip">開發中</span>
+        </div>
+        <div class="card-title">Coming Soon</div>
+        <p class="card-desc">Stay tuned.</p>
+        <div class="card-footer">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          開發中...
+        </div>
+      </div>
+
+      <div class="card disabled">
+        <div class="card-header">
+          <span class="hw-badge">HW 03</span>
+          <span class="status-badge status-wip">開發中</span>
+        </div>
+        <div class="card-title">Coming Soon</div>
+        <p class="card-desc">Stay tuned.</p>
+        <div class="card-footer">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          開發中...
+        </div>
+      </div>
+    </div>
+
+    <footer>chichi0418 &nbsp;·&nbsp; NYCU Intro. to Generative AI 2026</footer>
+  </div>
+</body>
+</html>
