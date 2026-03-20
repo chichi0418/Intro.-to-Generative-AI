@@ -19,10 +19,14 @@ async function streamChat({ messages, systemPrompt, model, temperature, topP, ma
   // Keep last 20 messages for context, convert roles
   const recent = messages.slice(-20);
   const lastMessage = recent[recent.length - 1];
-  const history = recent.slice(0, -1).map(m => ({
+  let history = recent.slice(0, -1).map(m => ({
     role: m.role === 'assistant' ? 'model' : 'user',
     parts: [{ text: m.content }],
   }));
+  // Google requires history to start with 'user'
+  while (history.length > 0 && history[0].role !== 'user') {
+    history = history.slice(1);
+  }
 
   const chat = genModel.startChat({ history });
   const result = await chat.sendMessageStream(lastMessage.content);
