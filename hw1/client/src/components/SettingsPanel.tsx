@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import type { Settings } from '../types';
-import { AVAILABLE_MODELS } from '../types';
+import { AVAILABLE_MODELS, PRESET_INSTRUCTIONS } from '../types';
 import { ModelSelector } from './ModelSelector';
 import { SystemInstructionPanel } from './SystemInstructionPanel';
 import { Slider } from './Slider';
@@ -41,7 +41,8 @@ export function SettingsPanel({ settings, onChange, onReset, onClose }: Props) {
   const [systemPanelOpen, setSystemPanelOpen] = useState(false);
 
   const currentModel = AVAILABLE_MODELS.find(m => m.id === settings.model);
-  const activeInstruction = (settings.systemInstructions ?? []).find(i => i.id === settings.activeSystemInstructionId);
+  const activeInstruction = (settings.systemInstructions ?? []).find(i => i.id === settings.activeSystemInstructionId)
+    ?? PRESET_INSTRUCTIONS.find(i => i.id === settings.activeSystemInstructionId);
 
   return (
     <>

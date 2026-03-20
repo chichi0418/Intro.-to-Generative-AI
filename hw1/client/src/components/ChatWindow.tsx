@@ -196,33 +196,6 @@ export function ChatWindow({ messages, error, onEditMessage, onRegenerate, onRet
         zIndex: 20, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
       }}>
         <TableOfContents messages={messages} scrollRef={scrollRef} />
-        <button
-          onClick={onToggleSidebar}
-          title={sidebarOpen ? 'Collapse settings (Cmd+/)' : 'Open settings (Cmd+/)'}
-          style={{
-            width: 30, height: 30,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            borderRadius: 8,
-            background: 'rgba(255,255,255,0.05)',
-            border: '1px solid rgba(255,255,255,0.09)',
-            color: '#8a8f98',
-            cursor: 'pointer',
-            backdropFilter: 'blur(12px)',
-            transition: 'all 0.15s',
-          }}
-          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.09)'; e.currentTarget.style.color = '#ededef'; }}
-          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = '#8a8f98'; }}
-        >
-          {sidebarOpen ? (
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M13 5l7 7-7 7" /><path d="M5 5l7 7-7 7" />
-            </svg>
-          ) : (
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M11 19l-7-7 7-7" /><path d="M19 19l-7-7 7-7" />
-            </svg>
-          )}
-        </button>
       </div>
 
       <div ref={scrollRef} className="h-full overflow-y-auto py-6">

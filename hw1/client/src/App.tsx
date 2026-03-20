@@ -139,6 +139,7 @@ function App() {
                 onSwitch={handleSwitch}
                 onDelete={deleteConversation}
                 onRename={updateTitle}
+                onOpenSettings={() => setSidebarOpen(true)}
               />
             </div>
           </>
@@ -152,6 +153,7 @@ function App() {
                 onSwitch={handleSwitch}
                 onDelete={deleteConversation}
                 onRename={updateTitle}
+                onOpenSettings={() => setSidebarOpen(true)}
               />
             </div>
           </div>
