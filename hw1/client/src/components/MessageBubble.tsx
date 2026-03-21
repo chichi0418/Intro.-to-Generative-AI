@@ -220,7 +220,7 @@ export function MessageBubble({ message, onEdit, onRegenerate }: Props) {
   }
 
   return (
-    <div className="flex justify-start mb-5 px-4 gap-3 group">
+    <div className={`flex justify-start mb-5 px-4 gap-3 group ${message.content ? 'items-start' : 'items-center'}`}>
       <div
         className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center mt-0.5"
         style={{ background: PROVIDER_AVATAR[provider]?.bg ?? PROVIDER_AVATAR.google.bg }}
