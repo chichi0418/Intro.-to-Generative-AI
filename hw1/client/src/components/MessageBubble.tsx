@@ -303,6 +303,11 @@ export function MessageBubble({ message, onEdit, onRegenerate }: Props) {
                 </>
               )}
             </button>
+            {message.duration != null && (
+              <span className="text-xs ml-1" style={{ color: 'rgba(255,255,255,0.2)' }}>
+                {message.duration.toFixed(1)}s
+              </span>
+            )}
             {onRegenerate && (
               <button
                 onClick={onRegenerate}
@@ -318,11 +323,6 @@ export function MessageBubble({ message, onEdit, onRegenerate }: Props) {
                 </svg>
                 Regenerate
               </button>
-            )}
-            {message.duration != null && (
-              <span className="text-xs ml-1" style={{ color: 'rgba(255,255,255,0.2)' }}>
-                {message.duration.toFixed(1)}s
-              </span>
             )}
           </div>
         )}
