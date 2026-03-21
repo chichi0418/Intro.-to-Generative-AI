@@ -36,7 +36,12 @@ export async function sendChatStream(
   }
 
   if (!res.ok) {
-    onError(`HTTP error ${res.status}`);
+    if (res.status === 429) {
+      const body = await res.json().catch(() => ({}));
+      onError(body.error ?? 'Rate limit exceeded. Please wait before sending more messages.');
+    } else {
+      onError(`HTTP error ${res.status}`);
+    }
     return;
   }
 
