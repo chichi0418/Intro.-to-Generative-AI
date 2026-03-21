@@ -17,7 +17,8 @@ app.use(cors({
 app.use(express.json());
 app.use('/api/chat', chatRouter);
 
-app.get('/health', (req, res) => res.json({ status: 'ok' }));
+app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
+app.head('/api/health', (req, res) => res.sendStatus(200));
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
