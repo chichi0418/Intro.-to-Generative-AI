@@ -212,7 +212,7 @@ export function SystemInstructionPanel({
         {activeId ? (
           <p className="text-xs" style={{ color: '#8ab4f8' }}>
             <span style={{ color: 'rgba(255,255,255,0.25)' }}>Active: </span>
-            {instructions.find(i => i.id === activeId)?.title || 'Untitled'}
+            {allInstructions.find(i => i.id === activeId)?.title || 'Untitled'}
           </p>
         ) : (
           <p className="text-xs" style={{ color: 'rgba(255,255,255,0.2)' }}>No active instruction</p>
