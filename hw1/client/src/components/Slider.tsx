@@ -2,6 +2,7 @@ import { useState, useRef, useCallback } from 'react';
 
 interface Props {
   label: string;
+  description?: string;
   value: number;
   min: number;
   max: number;
@@ -16,7 +17,7 @@ function snap(value: number, min: number, max: number, step: number) {
   return parseFloat((min + steps * step).toFixed(10));
 }
 
-export function Slider({ label, value, min, max, step, decimals = 2, onChange }: Props) {
+export function Slider({ label, description, value, min, max, step, decimals = 2, onChange }: Props) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState('');
   const [dragging, setDragging] = useState(false);
@@ -62,8 +63,8 @@ export function Slider({ label, value, min, max, step, decimals = 2, onChange }:
   return (
     <div className="px-4 py-3">
       {/* Label + value box */}
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-medium" style={{ color: '#ededef' }}>{label}</span>
+      <div className="flex items-center justify-between mb-1">
+        <span className="text-xs font-medium" style={{ color: 'var(--text-main)' }}>{label}</span>
 
         {editing ? (
           <input
@@ -78,20 +79,23 @@ export function Slider({ label, value, min, max, step, decimals = 2, onChange }:
               if (e.key === 'Escape') setEditing(false);
             }}
             className="w-14 text-center text-xs rounded-lg px-2 py-1 outline-none font-mono"
-            style={{ background: 'rgba(255,255,255,0.05)', color: '#ededef', border: '1px solid rgba(138,180,248,0.5)', caretColor: '#8ab4f8' }}
+            style={{ background: 'var(--bg-soft)', color: 'var(--text-main)', border: '1px solid var(--accent-border)', caretColor: 'var(--accent)' }}
           />
         ) : (
           <button
             onClick={startEdit}
             className="text-xs rounded-lg px-2.5 py-1 font-mono transition-colors"
-            style={{ background: 'rgba(255,255,255,0.06)', color: '#ededef', minWidth: '3rem', textAlign: 'center' }}
-            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.1)')}
-            onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.06)')}
+            style={{ background: 'var(--bg-soft-hover)', color: 'var(--text-main)', minWidth: '3rem', textAlign: 'center' }}
+            onMouseEnter={e => (e.currentTarget.style.background = 'var(--line)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'var(--bg-soft-hover)')}
           >
             {value.toFixed(decimals)}
           </button>
         )}
       </div>
+      {description && (
+        <p className="text-[11px] mb-2 leading-snug" style={{ color: 'var(--text-faint)' }}>{description}</p>
+      )}
 
       {/* Track */}
       <div
@@ -104,12 +108,12 @@ export function Slider({ label, value, min, max, step, decimals = 2, onChange }:
       >
       <div
         className="relative w-full rounded-full"
-        style={{ height: 5, background: 'rgba(255,255,255,0.12)', cursor: dragging ? 'grabbing' : 'pointer' }}
+        style={{ height: 5, background: 'var(--line-strong)', cursor: dragging ? 'grabbing' : 'pointer' }}
       >
         {/* Fill */}
         <div
           className="absolute left-0 top-0 h-full rounded-full"
-          style={{ width: `${percent}%`, background: '#8ab4f8' }}
+          style={{ width: `${percent}%`, background: 'var(--accent)' }}
         />
         {/* Thumb halo */}
         <div
@@ -117,7 +121,7 @@ export function Slider({ label, value, min, max, step, decimals = 2, onChange }:
           style={{
             width: 36,
             height: 36,
-            background: 'rgba(255,255,255,0.15)',
+            background: 'var(--line-strong)',
             left: `${percent}%`,
             top: '50%',
             transform: 'translate(-50%, -50%)',
@@ -131,7 +135,7 @@ export function Slider({ label, value, min, max, step, decimals = 2, onChange }:
           style={{
             width: 11,
             height: 11,
-            background: '#e3e3e3',
+            background: 'var(--bg-surface-strong)',
             left: `${percent}%`,
             top: '50%',
             transform: 'translate(-50%, -50%)',

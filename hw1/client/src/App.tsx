@@ -9,6 +9,8 @@ import { SettingsPanel } from './components/SettingsPanel';
 import { ConversationSidebar } from './components/ConversationSidebar';
 import { AVAILABLE_MODELS, DEFAULT_SETTINGS } from './types';
 
+type ThemeMode = 'light' | 'dark';
+
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
   useEffect(() => {
@@ -26,6 +28,10 @@ function App() {
 
   const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth >= 1024);
   const [leftSidebarOpen, setLeftSidebarOpen] = useState(() => window.innerWidth >= 768);
+  const [theme, setTheme] = useState<ThemeMode>(() => {
+    const saved = localStorage.getItem('uiTheme');
+    return saved === 'dark' ? 'dark' : 'light';
+  });
 
   // Auto-close sidebars when switching to mobile
   useEffect(() => {
@@ -106,17 +112,26 @@ function App() {
 
   const EASING = 'cubic-bezier(0.22, 1, 0.36, 1)';
 
-  return (
-    <div className="flex h-screen overflow-hidden" style={{ background: 'linear-gradient(135deg, #0a0a0f 0%, #07070a 55%, #0d0a14 100%)' }}>
-      {/* Ambient blobs */}
-      <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}>
-        <div className="blob blob-1" />
-        <div className="blob blob-2" />
-        <div className="blob blob-3" />
-      </div>
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem('uiTheme', theme);
+  }, [theme]);
 
-      {/* Content */}
-      <div className="flex w-full h-full" style={{ position: 'relative', zIndex: 1 }}>
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.add('theme-animating');
+    const t = window.setTimeout(() => {
+      root.classList.remove('theme-animating');
+    }, 360);
+    return () => {
+      window.clearTimeout(t);
+      root.classList.remove('theme-animating');
+    };
+  }, [theme]);
+
+  return (
+    <div className="flex h-screen overflow-hidden app-shell">
+      <div className="flex w-full h-full">
 
         {/* ── Left sidebar ── */}
         {isMobile ? (
@@ -124,7 +139,7 @@ function App() {
             {leftSidebarOpen && (
               <div
                 onClick={() => setLeftSidebarOpen(false)}
-                style={{ position: 'fixed', inset: 0, zIndex: 38, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(2px)' }}
+                style={{ position: 'fixed', inset: 0, zIndex: 38, background: 'var(--overlay)', backdropFilter: 'blur(1px)' }}
               />
             )}
             <div style={{
@@ -140,6 +155,8 @@ function App() {
                 onDelete={deleteConversation}
                 onRename={updateTitle}
                 onOpenSettings={() => setSidebarOpen(true)}
+                theme={theme}
+                onToggleTheme={() => setTheme(prev => (prev === 'light' ? 'dark' : 'light'))}
               />
             </div>
           </>
@@ -154,6 +171,8 @@ function App() {
                 onDelete={deleteConversation}
                 onRename={updateTitle}
                 onOpenSettings={() => setSidebarOpen(true)}
+                theme={theme}
+                onToggleTheme={() => setTheme(prev => (prev === 'light' ? 'dark' : 'light'))}
               />
             </div>
           </div>
@@ -182,7 +201,7 @@ function App() {
         {sidebarOpen && (
           <div
             onClick={() => setSidebarOpen(false)}
-            style={{ position: 'fixed', inset: 0, zIndex: 48, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(3px)' }}
+            style={{ position: 'fixed', inset: 0, zIndex: 48, background: 'var(--overlay)', backdropFilter: 'blur(1px)' }}
           />
         )}
         <div style={{

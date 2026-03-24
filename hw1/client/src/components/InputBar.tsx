@@ -41,8 +41,8 @@ export function InputBar({ onSend, onStop, disabled, model }: Props) {
       <div
         className="rounded-2xl overflow-hidden"
         style={{
-          background: 'rgba(255,255,255,0.05)',
-          border: '1px solid rgba(255,255,255,0.1)',
+          background: 'var(--bg-soft)',
+          border: '1px solid var(--line)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
         }}
@@ -57,10 +57,10 @@ export function InputBar({ onSend, onStop, disabled, model }: Props) {
           className="w-full px-4 pt-4 pb-2 text-sm resize-none outline-none"
           style={{
             background: 'transparent',
-            color: '#ededef',
+            color: 'var(--text-main)',
             minHeight: '52px',
             maxHeight: '200px',
-            caretColor: '#8ab4f8',
+            caretColor: 'var(--accent)',
           }}
         />
 
@@ -69,7 +69,7 @@ export function InputBar({ onSend, onStop, disabled, model }: Props) {
           <div className="flex items-center gap-1.5">
             <span
               className="px-2.5 py-1 rounded-full text-xs font-medium"
-              style={{ background: 'rgba(255,255,255,0.06)', color: '#8a8f98', border: '1px solid rgba(255,255,255,0.09)' }}
+              style={{ background: 'var(--bg-soft-hover)', color: 'var(--text-muted)', border: '1px solid var(--line)' }}
             >
               {model}
             </span>
@@ -80,14 +80,14 @@ export function InputBar({ onSend, onStop, disabled, model }: Props) {
               onClick={onStop}
               className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium transition-all"
               style={{
-                background: 'rgba(242,139,130,0.12)',
-                color: '#f28b82',
-                border: '1px solid rgba(242,139,130,0.25)',
+                background: 'var(--danger-soft)',
+                color: 'var(--danger)',
+                border: '1px solid var(--danger-border)',
                 cursor: 'pointer',
                 fontWeight: 500,
               }}
-              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(242,139,130,0.22)')}
-              onMouseLeave={e => (e.currentTarget.style.background = 'rgba(242,139,130,0.12)')}
+              onMouseEnter={e => (e.currentTarget.style.background = 'var(--danger-border)')}
+              onMouseLeave={e => (e.currentTarget.style.background = 'var(--danger-soft)')}
             >
               <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
                 <rect x="4" y="4" width="16" height="16" rx="2" />
@@ -100,10 +100,10 @@ export function InputBar({ onSend, onStop, disabled, model }: Props) {
               disabled={!text.trim()}
               className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium transition-all"
               style={{
-                background: !text.trim() ? 'rgba(255,255,255,0.05)' : '#8ab4f8',
-                color: !text.trim() ? 'rgba(255,255,255,0.25)' : '#07070a',
+                background: !text.trim() ? 'var(--bg-soft)' : 'var(--accent)',
+                color: !text.trim() ? 'var(--text-faint)' : 'var(--bg-page)',
                 cursor: !text.trim() ? 'not-allowed' : 'pointer',
-                border: !text.trim() ? '1px solid rgba(255,255,255,0.08)' : '1px solid transparent',
+                border: !text.trim() ? '1px solid var(--line)' : '1px solid transparent',
                 fontWeight: 500,
               }}
             >
@@ -114,7 +114,7 @@ export function InputBar({ onSend, onStop, disabled, model }: Props) {
         </div>
       </div>
 
-      <p className="text-center text-xs mt-2" style={{ color: 'rgba(255,255,255,0.2)' }}>
+      <p className="text-center text-xs mt-2" style={{ color: 'var(--text-faint)' }}>
         Shift+Enter for newline
       </p>
     </div>

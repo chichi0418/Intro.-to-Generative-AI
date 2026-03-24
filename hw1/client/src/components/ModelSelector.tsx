@@ -28,9 +28,9 @@ function ProviderIcon({ provider }: { provider: string }) {
 }
 
 const BADGE_STYLE: Record<string, React.CSSProperties> = {
-  Free: { background: '#1e3a2f', color: '#34a853', border: '1px solid #2d5e48' },
-  New:  { background: '#1a2e4a', color: '#8ab4f8', border: '1px solid #2a4870' },
-  Paid: { background: '#2e2a1a', color: '#fbbc04', border: '1px solid #4a421a' },
+  Free: { background: 'var(--success-soft)', color: 'var(--success)', border: '1px solid var(--success-border)' },
+  New:  { background: 'var(--accent-soft)', color: 'var(--accent)', border: '1px solid var(--accent-border)' },
+  Paid: { background: 'var(--warning-soft)', color: 'var(--warning)', border: '1px solid var(--warning-border)' },
 };
 
 interface Props {
@@ -86,7 +86,7 @@ export function ModelSelector({ currentModel, onSelect, onClose }: Props) {
       ref={overlayRef}
       className="fixed inset-0 z-50 animate-fadeIn"
       style={{
-        background: 'rgba(0,0,0,0.45)',
+        background: 'var(--overlay)',
         backdropFilter: 'blur(8px)',
         WebkitBackdropFilter: 'blur(8px)',
         display: 'flex',
@@ -101,29 +101,29 @@ export function ModelSelector({ currentModel, onSelect, onClose }: Props) {
         style={{
           width: isMobile ? '100%' : 384,
           height: isMobile ? '85vh' : '100%',
-          background: 'rgba(8,8,12,0.92)',
+          background: 'var(--bg-surface-strong)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
-          borderTop: isMobile ? '1px solid rgba(255,255,255,0.08)' : 'none',
-          borderLeft: isMobile ? 'none' : '1px solid rgba(255,255,255,0.08)',
+          borderTop: isMobile ? '1px solid var(--line)' : 'none',
+          borderLeft: isMobile ? 'none' : '1px solid var(--line)',
           borderRadius: isMobile ? '16px 16px 0 0' : 0,
         }}
       >
         {/* Drag handle (mobile only) */}
         {isMobile && (
           <div className="flex justify-center pt-3 pb-1">
-            <div style={{ width: 36, height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.15)' }} />
+            <div style={{ width: 36, height: 4, borderRadius: 2, background: 'var(--line-strong)' }} />
           </div>
         )}
 
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.07)' }}>
-          <span className="text-base font-medium" style={{ color: '#ededef' }}>Model selection</span>
+        <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: 'var(--bg-soft-hover)' }}>
+          <span className="text-base font-medium" style={{ color: 'var(--text-main)' }}>Model selection</span>
           <button
             onClick={triggerClose}
             className="w-7 h-7 flex items-center justify-center rounded-full transition-colors"
-            style={{ color: '#8a8f98' }}
-            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.08)')}
+            style={{ color: 'var(--text-muted)' }}
+            onMouseEnter={e => (e.currentTarget.style.background = 'var(--line)')}
             onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -133,12 +133,12 @@ export function ModelSelector({ currentModel, onSelect, onClose }: Props) {
         </div>
 
         {/* Search */}
-        <div className="px-4 py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.07)' }}>
+        <div className="px-4 py-3 border-b" style={{ borderColor: 'var(--bg-soft-hover)' }}>
           <div
             className="flex items-center gap-2 px-3 py-2 rounded-full"
-            style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
+            style={{ background: 'var(--bg-soft)', border: '1px solid var(--line)' }}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9aa0a6" strokeWidth="2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-faint)" strokeWidth="2">
               <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
             </svg>
             <input
@@ -147,13 +147,13 @@ export function ModelSelector({ currentModel, onSelect, onClose }: Props) {
               onChange={e => setSearch(e.target.value)}
               placeholder="Search for a model"
               className="flex-1 text-sm outline-none bg-transparent"
-              style={{ color: '#ededef', caretColor: '#8ab4f8' }}
+              style={{ color: 'var(--text-main)', caretColor: 'var(--accent)' }}
             />
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 px-4 py-2 border-b overflow-x-auto" style={{ borderColor: 'rgba(255,255,255,0.07)' }}>
+        <div className="flex gap-1 px-4 py-2 border-b overflow-x-auto" style={{ borderColor: 'var(--bg-soft-hover)' }}>
           {PROVIDER_TABS.map(t => (
             <button
               key={t}
@@ -161,8 +161,8 @@ export function ModelSelector({ currentModel, onSelect, onClose }: Props) {
               className="px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-colors"
               style={
                 tab === t
-                  ? { background: 'rgba(138,180,248,0.9)', color: '#07070a' }
-                  : { color: '#8a8f98', border: '1px solid rgba(255,255,255,0.1)' }
+                  ? { background: 'var(--accent)', color: 'var(--bg-page)' }
+                  : { color: 'var(--text-muted)', border: '1px solid var(--line)' }
               }
             >
               {t}
@@ -173,7 +173,7 @@ export function ModelSelector({ currentModel, onSelect, onClose }: Props) {
         {/* Model list */}
         <div className="flex-1 overflow-y-auto px-3 py-3 space-y-2">
           {filtered.length === 0 && (
-            <div className="text-center py-10 text-sm" style={{ color: '#8a8f98' }}>No models found</div>
+            <div className="text-center py-10 text-sm" style={{ color: 'var(--text-muted)' }}>No models found</div>
           )}
           {filtered.map((m: ModelInfo) => {
             const isSelected = m.id === currentModel;
@@ -185,39 +185,39 @@ export function ModelSelector({ currentModel, onSelect, onClose }: Props) {
                 disabled={isDisabled}
                 className="w-full text-left px-4 py-3 rounded-xl transition-all"
                 style={{
-                  background: isDisabled ? 'rgba(255,255,255,0.02)' : isSelected ? 'rgba(138,180,248,0.1)' : 'rgba(255,255,255,0.04)',
-                  border: `1px solid ${isDisabled ? 'rgba(255,255,255,0.04)' : isSelected ? 'rgba(138,180,248,0.4)' : 'rgba(255,255,255,0.08)'}`,
+                  background: isDisabled ? 'var(--bg-soft)' : isSelected ? 'var(--accent-soft)' : 'var(--bg-soft)',
+                  border: `1px solid ${isDisabled ? 'var(--bg-soft)' : isSelected ? 'var(--accent-border)' : 'var(--line)'}`,
                   cursor: isDisabled ? 'not-allowed' : 'pointer',
                   opacity: isDisabled ? 0.45 : 1,
                 }}
-                onMouseEnter={e => { if (!isSelected && !isDisabled) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.18)'; }}
-                onMouseLeave={e => { if (!isSelected && !isDisabled) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; }}
+                onMouseEnter={e => { if (!isSelected && !isDisabled) e.currentTarget.style.borderColor = 'var(--line-strong)'; }}
+                onMouseLeave={e => { if (!isSelected && !isDisabled) e.currentTarget.style.borderColor = 'var(--line)'; }}
               >
                 <div className="flex items-start gap-2 mb-1">
-                  <span style={{ color: '#9aa0a6', display: 'inline-flex', alignItems: 'center', flexShrink: 0, marginTop: 2 }}>
+                  <span style={{ color: 'var(--text-faint)', display: 'inline-flex', alignItems: 'center', flexShrink: 0, marginTop: 2 }}>
                     <ProviderIcon provider={m.provider} />
                   </span>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-sm font-medium" style={{ color: isDisabled ? '#5a5f68' : '#ededef' }}>{m.label}</span>
+                      <span className="text-sm font-medium" style={{ color: isDisabled ? 'var(--text-faint)' : 'var(--text-main)' }}>{m.label}</span>
                       {m.badge && m.badge.map(b => (
                         <span key={b} className="text-xs px-1.5 py-0.5 rounded" style={BADGE_STYLE[b]}>{b}</span>
                       ))}
                       {isDisabled && (
-                        <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.05)', color: '#5a5f68', border: '1px solid rgba(255,255,255,0.08)' }}>
+                        <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: 'var(--bg-soft)', color: 'var(--text-faint)', border: '1px solid var(--line)' }}>
                           Coming soon
                         </span>
                       )}
                     </div>
-                    <div className="text-xs mt-0.5 truncate" style={{ color: '#5a5f68' }}>{m.id}</div>
+                    <div className="text-xs mt-0.5 truncate" style={{ color: 'var(--text-faint)' }}>{m.id}</div>
                   </div>
                   {isSelected && (
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8ab4f8" strokeWidth="2.5" className="flex-shrink-0 mt-0.5">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2.5" className="flex-shrink-0 mt-0.5">
                       <polyline points="20 6 9 17 4 12" />
                     </svg>
                   )}
                 </div>
-                <p className="text-xs leading-relaxed" style={{ color: isDisabled ? '#3a3f48' : '#8a8f98' }}>{m.description}</p>
+                <p className="text-xs leading-relaxed" style={{ color: isDisabled ? 'var(--text-faint)' : 'var(--text-muted)' }}>{m.description}</p>
               </button>
             );
           })}

@@ -15,7 +15,7 @@ interface Props {
 }
 
 function Divider() {
-  return <div style={{ height: '1px', background: 'rgba(255,255,255,0.06)' }} />;
+  return <div style={{ height: '1px', background: 'var(--bg-soft-hover)' }} />;
 }
 
 function ProviderIcon({ provider }: { provider: string }) {
@@ -75,24 +75,24 @@ export function SettingsPanel({ settings, onChange, onReset, onClose }: Props) {
         style={{
           width: 320,
           maxHeight: '85vh',
-          background: 'rgba(10,10,15,0.92)',
+          background: 'var(--bg-surface-strong)',
           backdropFilter: 'blur(28px)',
           WebkitBackdropFilter: 'blur(28px)',
-          border: '1px solid rgba(255,255,255,0.1)',
+          border: '1px solid var(--line)',
           borderRadius: 16,
-          boxShadow: '0 24px 64px rgba(0,0,0,0.6)',
+          boxShadow: 'var(--shadow-lg)',
         }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-          <span className="text-sm font-medium" style={{ color: '#ededef' }}>Run settings</span>
+        <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid var(--bg-soft-hover)' }}>
+          <span className="text-sm font-medium" style={{ color: 'var(--text-main)' }}>Run settings</span>
           <div className="flex items-center gap-1">
             <Tooltip text="Reset all settings to default values">
               <button
                 onClick={onReset}
                 className="w-7 h-7 flex items-center justify-center rounded-md transition-colors"
-                style={{ color: '#8a8f98' }}
-                onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.07)')}
+                style={{ color: 'var(--text-muted)' }}
+                onMouseEnter={e => (e.currentTarget.style.background = 'var(--bg-soft-hover)')}
                 onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -104,8 +104,8 @@ export function SettingsPanel({ settings, onChange, onReset, onClose }: Props) {
             <button
               onClick={onClose}
               className="w-7 h-7 flex items-center justify-center rounded-md transition-colors"
-              style={{ color: '#8a8f98' }}
-              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.07)')}
+              style={{ color: 'var(--text-muted)' }}
+              onMouseEnter={e => (e.currentTarget.style.background = 'var(--bg-soft-hover)')}
               onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -121,19 +121,19 @@ export function SettingsPanel({ settings, onChange, onReset, onClose }: Props) {
             <button
               onClick={() => setModelOpen(true)}
               className="w-full text-left rounded-xl p-3 transition-all"
-              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}
-              onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.18)')}
-              onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.09)')}
+              style={{ background: 'var(--bg-soft)', border: '1px solid var(--line)' }}
+              onMouseEnter={e => (e.currentTarget.style.borderColor = 'var(--line-strong)')}
+              onMouseLeave={e => (e.currentTarget.style.borderColor = 'var(--line)')}
             >
               <div className="flex items-center gap-2 mb-0.5">
-                <span style={{ color: '#8a8f98', display: 'inline-flex', alignItems: 'center' }}><ProviderIcon provider={currentModel?.provider ?? 'google'} /></span>
-                <span className="text-sm font-medium" style={{ color: '#ededef' }}>
+                <span style={{ color: 'var(--text-muted)', display: 'inline-flex', alignItems: 'center' }}><ProviderIcon provider={currentModel?.provider ?? 'google'} /></span>
+                <span className="text-sm font-medium" style={{ color: 'var(--text-main)' }}>
                   {currentModel?.label ?? settings.model}
                 </span>
               </div>
-              <div className="text-xs mb-1 pl-5" style={{ color: '#8a8f98' }}>{settings.model}</div>
+              <div className="text-xs mb-1 pl-5" style={{ color: 'var(--text-muted)' }}>{settings.model}</div>
               {currentModel?.description && (
-                <p className="text-xs leading-relaxed pl-5" style={{ color: '#8a8f98' }}>
+                <p className="text-xs leading-relaxed pl-5" style={{ color: 'var(--text-muted)' }}>
                   {currentModel.description}
                 </p>
               )}
@@ -150,15 +150,15 @@ export function SettingsPanel({ settings, onChange, onReset, onClose }: Props) {
               className="flex items-center justify-between w-full text-left"
               onClick={() => setSystemPanelOpen(true)}
             >
-              <span className="text-sm" style={{ color: '#ededef' }}>System instructions</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8a8f98" strokeWidth="2">
+              <span className="text-sm" style={{ color: 'var(--text-main)' }}>System instructions</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2">
                 <path d="M9 18l6-6-6-6" />
               </svg>
             </button>
           </Tooltip>
-          <p className="text-xs mt-1 line-clamp-2" style={{ color: activeInstruction ? '#8ab4f8' : '#8a8f98' }}>
+          <p className="text-xs mt-1 line-clamp-2" style={{ color: activeInstruction ? 'var(--accent)' : 'var(--text-muted)' }}>
             {activeInstruction
-              ? <>{activeInstruction.title}{activeInstruction.content && <span style={{ color: '#8a8f98' }}> — {activeInstruction.content}</span>}</>
+              ? <>{activeInstruction.title}{activeInstruction.content && <span style={{ color: 'var(--text-muted)' }}> — {activeInstruction.content}</span>}</>
               : 'No active instruction'}
           </p>
         </div>
@@ -167,6 +167,7 @@ export function SettingsPanel({ settings, onChange, onReset, onClose }: Props) {
         <Tooltip text={"Controls randomness.\nHigher = more creative, lower = more deterministic."}>
           <Slider
             label="Temperature"
+            description="Controls randomness. Higher = more creative & varied; lower = more focused & deterministic."
             value={settings.temperature}
             min={0} max={2} step={0.01} decimals={2}
             onChange={v => onChange({ temperature: v })}
@@ -176,6 +177,7 @@ export function SettingsPanel({ settings, onChange, onReset, onClose }: Props) {
         <Tooltip text={"Nucleus sampling.\nLower values make output more focused."}>
           <Slider
             label="Top P"
+            description="Nucleus sampling threshold. Only tokens whose cumulative probability reaches this value are considered. Lower = more focused output."
             value={settings.topP}
             min={0} max={1} step={0.01} decimals={2}
             onChange={v => onChange({ topP: v })}
@@ -185,6 +187,7 @@ export function SettingsPanel({ settings, onChange, onReset, onClose }: Props) {
         <Tooltip text={"Maximum tokens the model can generate\nin a single response."}>
           <Slider
             label="Max Tokens"
+            description="Maximum number of tokens the model can generate in a single response. Higher allows longer replies."
             value={settings.maxTokens}
             min={64} max={4096} step={64} decimals={0}
             onChange={v => onChange({ maxTokens: v })}

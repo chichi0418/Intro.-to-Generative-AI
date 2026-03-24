@@ -60,18 +60,18 @@ function TableOfContents({ messages, scrollRef }: {
             width: 280,
             maxHeight: 360,
             overflowY: 'auto',
-            background: 'rgba(14,14,20,0.92)',
+            background: 'var(--bg-surface-strong)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
-            border: '1px solid rgba(255,255,255,0.1)',
+            border: '1px solid var(--line)',
             borderRadius: 12,
-            boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+            boxShadow: '0 8px 32px var(--overlay)',
             padding: '6px 4px',
           }}
         >
           <div
             className="px-3 pb-2 text-xs font-medium uppercase tracking-widest"
-            style={{ color: 'rgba(255,255,255,0.25)', borderBottom: '1px solid rgba(255,255,255,0.06)', marginBottom: 4 }}
+            style={{ color: 'var(--text-faint)', borderBottom: '1px solid var(--bg-soft-hover)', marginBottom: 4 }}
           >
             Questions
           </div>
@@ -80,13 +80,13 @@ function TableOfContents({ messages, scrollRef }: {
               key={m.index}
               onClick={() => scrollTo(m.index)}
               className="w-full text-left px-3 py-2 rounded-lg text-xs transition-all flex items-start gap-2"
-              style={{ color: '#c8ccd4', background: 'transparent' }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(138,180,248,0.08)'; e.currentTarget.style.color = '#ededef'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#c8ccd4'; }}
+              style={{ color: 'var(--text-muted)', background: 'transparent' }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-soft)'; e.currentTarget.style.color = 'var(--text-main)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-muted)'; }}
             >
               <span
                 className="shrink-0 mt-0.5 font-mono"
-                style={{ color: 'rgba(138,180,248,0.5)', fontSize: 10, minWidth: 16 }}
+                style={{ color: 'var(--accent-border)', fontSize: 10, minWidth: 16 }}
               >
                 {n + 1}.
               </span>
@@ -114,23 +114,23 @@ function TableOfContents({ messages, scrollRef }: {
           alignItems: 'center',
           justifyContent: 'center',
           borderRadius: 8,
-          background: open ? 'rgba(138,180,248,0.12)' : 'rgba(255,255,255,0.05)',
-          border: `1px solid ${open ? 'rgba(138,180,248,0.3)' : 'rgba(255,255,255,0.09)'}`,
-          color: open ? '#8ab4f8' : '#8a8f98',
+          background: open ? 'var(--accent-soft)' : 'var(--bg-soft)',
+          border: `1px solid ${open ? 'var(--accent-border)' : 'var(--line)'}`,
+          color: open ? 'var(--accent)' : 'var(--text-muted)',
           cursor: 'pointer',
           backdropFilter: 'blur(12px)',
           transition: 'all 0.15s',
         }}
         onMouseEnter={e => {
           if (!open) {
-            e.currentTarget.style.background = 'rgba(255,255,255,0.09)';
-            e.currentTarget.style.color = '#ededef';
+            e.currentTarget.style.background = 'var(--line)';
+            e.currentTarget.style.color = 'var(--text-main)';
           }
         }}
         onMouseLeave={e => {
           if (!open) {
-            e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
-            e.currentTarget.style.color = '#8a8f98';
+            e.currentTarget.style.background = 'var(--bg-soft)';
+            e.currentTarget.style.color = 'var(--text-muted)';
           }
         }}
       >
@@ -144,7 +144,15 @@ function TableOfContents({ messages, scrollRef }: {
   );
 }
 
-export function ChatWindow({ messages, error, onEditMessage, onRegenerate, onRetry, leftSidebarOpen, onToggleLeftSidebar }: Props) {
+export function ChatWindow({
+  messages,
+  error,
+  onEditMessage,
+  onRegenerate,
+  onRetry,
+  leftSidebarOpen,
+  onToggleLeftSidebar,
+}: Props) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -166,15 +174,15 @@ export function ChatWindow({ messages, error, onEditMessage, onRegenerate, onRet
             width: 30, height: 30,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             borderRadius: 8,
-            background: 'rgba(255,255,255,0.05)',
-            border: '1px solid rgba(255,255,255,0.09)',
-            color: '#8a8f98',
+            background: 'var(--bg-soft)',
+            border: '1px solid var(--line)',
+            color: 'var(--text-muted)',
             cursor: 'pointer',
             backdropFilter: 'blur(12px)',
             transition: 'all 0.15s',
           }}
-          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.09)'; e.currentTarget.style.color = '#ededef'; }}
-          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = '#8a8f98'; }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'var(--line)'; e.currentTarget.style.color = 'var(--text-main)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-soft)'; e.currentTarget.style.color = 'var(--text-muted)'; }}
         >
           {leftSidebarOpen ? (
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -199,14 +207,14 @@ export function ChatWindow({ messages, error, onEditMessage, onRegenerate, onRet
       <div ref={scrollRef} className="h-full overflow-y-auto py-6">
         {messages.length === 0 && (
           <div className="flex-1 flex items-center justify-center h-full">
-            <div className="text-center" style={{ color: '#9aa0a6' }}>
-              <div className="flex items-center justify-center w-14 h-14 rounded-2xl mx-auto mb-5" style={{ background: 'rgba(138,180,248,0.08)', border: '1px solid rgba(138,180,248,0.18)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}>
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#8ab4f8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <div className="text-center" style={{ color: 'var(--text-faint)' }}>
+              <div className="flex items-center justify-center w-14 h-14 rounded-2xl mx-auto mb-5" style={{ background: 'var(--accent-soft)', border: '1px solid var(--accent-border)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}>
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                 </svg>
               </div>
-              <div className="text-base font-semibold mb-1" style={{ color: '#ededef' }}>Start a conversation</div>
-              <div className="text-sm" style={{ color: '#8a8f98' }}>Send a message to begin</div>
+              <div className="text-base font-semibold mb-1" style={{ color: 'var(--text-main)' }}>Start a conversation</div>
+              <div className="text-sm" style={{ color: 'var(--text-muted)' }}>Send a message to begin</div>
             </div>
           </div>
         )}
@@ -220,14 +228,14 @@ export function ChatWindow({ messages, error, onEditMessage, onRegenerate, onRet
           </div>
         ))}
         {error && (
-          <div className="mx-4 mb-3 px-4 py-3 rounded-lg text-sm" style={{ background: 'rgba(242,139,130,0.08)', color: '#f28b82', border: '1px solid rgba(242,139,130,0.2)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}>
+          <div className="mx-4 mb-3 px-4 py-3 rounded-lg text-sm" style={{ background: 'var(--danger-soft)', color: 'var(--danger)', border: '1px solid var(--danger-border)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}>
             <div className="mb-2">Error: {error}</div>
             <button
               onClick={onRetry}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
-              style={{ background: 'rgba(242,139,130,0.15)', border: '1px solid rgba(242,139,130,0.3)', color: '#f28b82' }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(242,139,130,0.25)'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(242,139,130,0.15)'; }}
+              style={{ background: 'var(--danger-soft)', border: '1px solid var(--danger-border)', color: 'var(--danger)' }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'var(--danger-border)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'var(--danger-soft)'; }}
             >
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />

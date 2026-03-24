@@ -22,6 +22,8 @@ interface Props {
   onDelete: (id: string) => void;
   onRename: (id: string, title: string) => void;
   onOpenSettings: () => void;
+  theme: 'light' | 'dark';
+  onToggleTheme: () => void;
 }
 
 function groupByDate(conversations: Conversation[]) {
@@ -91,12 +93,12 @@ function ConvItem({
       className="flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer text-sm select-none transition-all"
       style={{
         background: active
-          ? 'rgba(255,255,255,0.08)'
+          ? 'var(--line)'
           : hovered
-          ? 'rgba(255,255,255,0.05)'
+          ? 'var(--bg-soft)'
           : 'transparent',
-        color: active ? '#ededef' : '#8a8f98',
-        borderLeft: active ? '2px solid #8ab4f8' : '2px solid transparent',
+        color: active ? 'var(--text-main)' : 'var(--text-muted)',
+        borderLeft: active ? '2px solid var(--accent)' : '2px solid transparent',
         cursor: editing ? 'default' : 'pointer',
       }}
     >
@@ -110,9 +112,9 @@ function ConvItem({
           onClick={e => e.stopPropagation()}
           className="flex-1 mr-1 text-sm outline-none bg-transparent"
           style={{
-            color: '#ededef',
+            color: 'var(--text-main)',
             border: 'none',
-            borderBottom: '1px solid rgba(138,180,248,0.5)',
+            borderBottom: '1px solid var(--accent-border)',
             borderRadius: 0,
             padding: '0 2px',
           }}
@@ -132,9 +134,9 @@ function ConvItem({
             onClick={e => { e.stopPropagation(); exportConversation(conv); }}
             title="Export as Markdown"
             className="w-5 h-5 flex items-center justify-center rounded transition-colors"
-            style={{ color: '#8a8f98' }}
-            onMouseEnter={e => (e.currentTarget.style.color = '#8ab4f8')}
-            onMouseLeave={e => (e.currentTarget.style.color = '#8a8f98')}
+            style={{ color: 'var(--text-muted)' }}
+            onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
+            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
           >
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -146,9 +148,9 @@ function ConvItem({
             onClick={e => { e.stopPropagation(); onDelete(); }}
             title="Delete"
             className="w-5 h-5 flex items-center justify-center rounded transition-colors"
-            style={{ color: '#8a8f98' }}
-            onMouseEnter={e => (e.currentTarget.style.color = '#f28b82')}
-            onMouseLeave={e => (e.currentTarget.style.color = '#8a8f98')}
+            style={{ color: 'var(--text-muted)' }}
+            onMouseEnter={e => (e.currentTarget.style.color = 'var(--danger)')}
+            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
           >
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
               <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
@@ -171,7 +173,7 @@ function Section({ label, items, activeId, onSwitch, onDelete, onRename }: {
   if (items.length === 0) return null;
   return (
     <div className="mb-3">
-      <div className="px-3 py-1 text-xs font-medium uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.25)' }}>
+      <div className="px-3 py-1 text-xs font-medium uppercase tracking-widest" style={{ color: 'var(--text-faint)' }}>
         {label}
       </div>
       {items.map(c => (
@@ -188,7 +190,17 @@ function Section({ label, items, activeId, onSwitch, onDelete, onRename }: {
   );
 }
 
-export function ConversationSidebar({ conversations, activeId, onNew, onSwitch, onDelete, onRename, onOpenSettings }: Props) {
+export function ConversationSidebar({
+  conversations,
+  activeId,
+  onNew,
+  onSwitch,
+  onDelete,
+  onRename,
+  onOpenSettings,
+  theme,
+  onToggleTheme,
+}: Props) {
   const [search, setSearch] = useState('');
 
   const filtered = search.trim()
@@ -203,22 +215,41 @@ export function ConversationSidebar({ conversations, activeId, onNew, onSwitch, 
       className="flex flex-col h-full shrink-0"
       style={{
         width: 240,
-        background: 'rgba(10,10,15,0.75)',
+        background: 'var(--bg-surface)',
         backdropFilter: 'blur(24px)',
         WebkitBackdropFilter: 'blur(24px)',
-        borderRight: '1px solid rgba(255,255,255,0.07)',
+        borderRight: '1px solid var(--bg-soft-hover)',
       }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-3 py-2.5" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-        <span className="text-sm font-medium" style={{ color: '#ededef' }}>History</span>
+      <div className="flex items-center justify-between px-3 py-2.5" style={{ borderBottom: '1px solid var(--bg-soft-hover)' }}>
+        <span className="text-sm font-medium" style={{ color: 'var(--text-main)' }}>History</span>
         <div className="flex items-center gap-1">
+          <button
+            onClick={onToggleTheme}
+            title={theme === 'light' ? '切換深色主題' : '切換淺色主題'}
+            className="w-7 h-7 flex items-center justify-center rounded-md transition-colors"
+            style={{ color: 'var(--text-muted)' }}
+            onMouseEnter={e => (e.currentTarget.style.background = 'var(--bg-soft-hover)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+          >
+            {theme === 'light' ? (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z" />
+              </svg>
+            ) : (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+              </svg>
+            )}
+          </button>
           <button
             onClick={onOpenSettings}
             title="Settings (Cmd+/)"
             className="w-7 h-7 flex items-center justify-center rounded-md transition-colors"
-            style={{ color: '#8a8f98' }}
-            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.07)')}
+            style={{ color: 'var(--text-muted)' }}
+            onMouseEnter={e => (e.currentTarget.style.background = 'var(--bg-soft-hover)')}
             onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -230,8 +261,8 @@ export function ConversationSidebar({ conversations, activeId, onNew, onSwitch, 
             onClick={onNew}
             title="New chat (Cmd+K)"
             className="w-7 h-7 flex items-center justify-center rounded-md transition-colors"
-            style={{ color: '#8a8f98' }}
-            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.07)')}
+            style={{ color: 'var(--text-muted)' }}
+            onMouseEnter={e => (e.currentTarget.style.background = 'var(--bg-soft-hover)')}
             onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -245,8 +276,8 @@ export function ConversationSidebar({ conversations, activeId, onNew, onSwitch, 
       {/* Search */}
       {hasAny && (
         <div className="px-2 pt-2 pb-1">
-          <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{ color: '#8a8f98', flexShrink: 0 }}>
+          <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg" style={{ background: 'var(--bg-soft)', border: '1px solid var(--line)' }}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{ color: 'var(--text-muted)', flexShrink: 0 }}>
               <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
             </svg>
             <input
@@ -255,10 +286,10 @@ export function ConversationSidebar({ conversations, activeId, onNew, onSwitch, 
               value={search}
               onChange={e => setSearch(e.target.value)}
               className="flex-1 text-xs outline-none bg-transparent"
-              style={{ color: '#ededef', caretColor: '#8ab4f8' }}
+              style={{ color: 'var(--text-main)', caretColor: 'var(--accent)' }}
             />
             {search && (
-              <button onClick={() => setSearch('')} style={{ color: '#8a8f98', lineHeight: 1 }}>
+              <button onClick={() => setSearch('')} style={{ color: 'var(--text-muted)', lineHeight: 1 }}>
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                   <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
@@ -279,12 +310,12 @@ export function ConversationSidebar({ conversations, activeId, onNew, onSwitch, 
             </>
           ) : (
             <div className="flex flex-col items-center justify-center h-full pb-16">
-              <span className="text-xs" style={{ color: 'rgba(255,255,255,0.2)' }}>No results</span>
+              <span className="text-xs" style={{ color: 'var(--text-faint)' }}>No results</span>
             </div>
           )
         ) : (
           <div className="flex flex-col items-center justify-center h-full pb-16">
-            <span className="text-xs" style={{ color: 'rgba(255,255,255,0.2)' }}>No conversations yet</span>
+            <span className="text-xs" style={{ color: 'var(--text-faint)' }}>No conversations yet</span>
           </div>
         )}
       </div>
