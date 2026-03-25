@@ -129,7 +129,8 @@ export function AdminUsagePanel({ onClose }: Props) {
           <table className="w-full text-xs" style={{ borderCollapse: 'separate', borderSpacing: 0 }}>
             <thead>
               <tr>
-                <th className="text-left p-2" style={{ color: 'var(--text-muted)', borderBottom: '1px solid var(--bg-soft-hover)' }}>IP</th>
+                <th className="text-left p-2" style={{ color: 'var(--text-muted)', borderBottom: '1px solid var(--bg-soft-hover)' }}>Type</th>
+                <th className="text-left p-2" style={{ color: 'var(--text-muted)', borderBottom: '1px solid var(--bg-soft-hover)' }}>Identifier</th>
                 <th className="text-left p-2" style={{ color: 'var(--text-muted)', borderBottom: '1px solid var(--bg-soft-hover)' }}>Used</th>
                 <th className="text-left p-2" style={{ color: 'var(--text-muted)', borderBottom: '1px solid var(--bg-soft-hover)' }}>Remaining</th>
                 <th className="text-left p-2" style={{ color: 'var(--text-muted)', borderBottom: '1px solid var(--bg-soft-hover)' }}>Status</th>
@@ -140,8 +141,9 @@ export function AdminUsagePanel({ onClose }: Props) {
             </thead>
             <tbody>
               {(snapshot?.records ?? []).map((r) => (
-                <tr key={r.ip}>
-                  <td className="p-2" style={{ color: 'var(--text-main)', borderBottom: '1px solid var(--bg-soft-hover)' }}>{r.ip}</td>
+                <tr key={r.key}>
+                  <td className="p-2" style={{ color: 'var(--text-main)', borderBottom: '1px solid var(--bg-soft-hover)' }}>{r.identifierType}</td>
+                  <td className="p-2" style={{ color: 'var(--text-main)', borderBottom: '1px solid var(--bg-soft-hover)' }}>{r.identifier}</td>
                   <td className="p-2" style={{ color: 'var(--text-main)', borderBottom: '1px solid var(--bg-soft-hover)' }}>{r.count}</td>
                   <td className="p-2" style={{ color: 'var(--text-main)', borderBottom: '1px solid var(--bg-soft-hover)' }}>{r.remaining}</td>
                   <td className="p-2" style={{ borderBottom: '1px solid var(--bg-soft-hover)' }}>
@@ -158,15 +160,15 @@ export function AdminUsagePanel({ onClose }: Props) {
                   <td className="p-2" style={{ color: 'var(--text-main)', borderBottom: '1px solid var(--bg-soft-hover)' }}>{formatDate(r.resetAt)}</td>
                   <td className="p-2" style={{ borderBottom: '1px solid var(--bg-soft-hover)' }}>
                     <button
-                      disabled={resettingIp === r.ip || loading}
+                      disabled={resettingIp === r.key || loading}
                       className="px-2 py-1 rounded-md text-xs"
                       style={{ color: 'var(--accent)', border: '1px solid var(--accent-border)', background: 'var(--accent-soft)' }}
                       onClick={async () => {
                         if (!token.trim()) { setError('Please enter admin token'); return; }
                         setError(null);
-                        setResettingIp(r.ip);
+                        setResettingIp(r.key);
                         try {
-                          await resetServerKeyUsage(token.trim(), r.ip);
+                          await resetServerKeyUsage(token.trim(), r.key);
                           await loadUsage();
                         } catch (err) {
                           setError((err as Error).message);
@@ -175,7 +177,7 @@ export function AdminUsagePanel({ onClose }: Props) {
                         }
                       }}
                     >
-                      {resettingIp === r.ip ? 'Resetting...' : 'Reset'}
+                      {resettingIp === r.key ? 'Resetting...' : 'Reset'}
                     </button>
                   </td>
                 </tr>

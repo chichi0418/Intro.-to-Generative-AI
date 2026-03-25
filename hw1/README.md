@@ -136,6 +136,7 @@ SUPABASE_POOLER_URL=postgresql://postgres.<project-ref>:[YOUR-PASSWORD]@aws-0-<r
 
 `SERVER_KEY_FREE_LIMIT` / `SERVER_KEY_FREE_WINDOW_MS` 可限制「使用伺服器 key 的免費次數」。  
 超過後會顯示通知，並要求使用者改填自己的 API key 才能繼續。
+計次優先使用前端裝置 `clientId`（localStorage），沒有時才 fallback IP。
 
 若要查看每個 IP 用量後台，設定 `ADMIN_API_TOKEN`。  
 前端 Settings → `Admin Usage` 可輸入 token 查詢 `/api/admin/usage`。

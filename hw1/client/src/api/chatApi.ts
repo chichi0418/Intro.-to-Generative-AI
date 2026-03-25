@@ -2,6 +2,15 @@ import type { Message, Settings } from '../types';
 import { PRESET_INSTRUCTIONS } from '../types';
 
 const API_BASE = import.meta.env.VITE_API_URL ?? '';
+const CLIENT_ID_KEY = 'chatClientId';
+
+function getClientId() {
+  const existing = localStorage.getItem(CLIENT_ID_KEY);
+  if (existing) return existing;
+  const created = `c_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`;
+  localStorage.setItem(CLIENT_ID_KEY, created);
+  return created;
+}
 
 export interface ChatApiError {
   message: string;
@@ -33,6 +42,7 @@ export async function sendChatStream(
         topP: settings.topP,
         maxTokens: settings.maxTokens,
         apiKeys: settings.apiKeys,
+        clientId: getClientId(),
       }),
     });
   } catch (err) {

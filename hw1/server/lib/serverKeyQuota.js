@@ -9,6 +9,12 @@ const SERVER_KEY_FREE_WINDOW_MS = parseInt(
 const usageByIp = new Map();
 let tableInitPromise;
 
+function parseUsageKey(key) {
+  if (key.startsWith('client:')) return { type: 'client', identifier: key.slice(7) };
+  if (key.startsWith('ip:')) return { type: 'ip', identifier: key.slice(3) };
+  return { type: 'unknown', identifier: key };
+}
+
 async function ensureTable() {
   const pool = getDbPool();
   if (!pool) return false;
@@ -156,10 +162,13 @@ function getInMemorySnapshot() {
   clearExpiredUsage(now);
 
   const records = [];
-  for (const [ip, record] of usageByIp.entries()) {
+  for (const [key, record] of usageByIp.entries()) {
     const resetAt = record.windowStart + SERVER_KEY_FREE_WINDOW_MS;
+    const parsed = parseUsageKey(key);
     records.push({
-      ip,
+      key,
+      identifierType: parsed.type,
+      identifier: parsed.identifier,
       count: record.count,
       remaining: Math.max(0, SERVER_KEY_FREE_LIMIT - record.count),
       windowStart: record.windowStart,
@@ -194,8 +203,11 @@ async function getDbSnapshot() {
   const records = rows.map((row) => {
     const count = Number(row.count);
     const windowStart = Number(row.window_start_ms);
+    const parsed = parseUsageKey(row.ip);
     return {
-      ip: row.ip,
+      key: row.ip,
+      identifierType: parsed.type,
+      identifier: parsed.identifier,
       count,
       remaining: Math.max(0, SERVER_KEY_FREE_LIMIT - count),
       windowStart,

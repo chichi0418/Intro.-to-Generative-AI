@@ -31,7 +31,7 @@ function hasServerApiKey(provider) {
 }
 
 router.post('/', async (req, res) => {
-  const { model, messages, systemPrompt, temperature, topP, maxTokens, apiKeys } = req.body;
+  const { model, messages, systemPrompt, temperature, topP, maxTokens, apiKeys, clientId } = req.body;
 
   if (!model || !messages) {
     return res.status(400).json({ error: 'model and messages are required' });
@@ -46,8 +46,9 @@ router.post('/', async (req, res) => {
   const usingServerKey = !usingUserKey && hasServerApiKey(provider);
 
   if (usingServerKey) {
-    const ip = req.ip || 'unknown';
-    const quota = await consumeServerKeyQuota(ip);
+    const normalizedClientId = typeof clientId === 'string' ? clientId.trim() : '';
+    const usageKey = normalizedClientId ? `client:${normalizedClientId.slice(0, 128)}` : `ip:${req.ip || 'unknown'}`;
+    const quota = await consumeServerKeyQuota(usageKey);
     if (!quota.allowed) {
       const windowHours = Math.round(SERVER_KEY_FREE_WINDOW_MS / (60 * 60 * 1000) * 10) / 10;
       return res.status(429).json({

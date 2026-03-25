@@ -31,11 +31,11 @@ router.get('/usage', ensureAdminAuth, async (req, res) => {
 });
 
 router.post('/usage/reset', ensureAdminAuth, async (req, res) => {
-  const ip = String(req.body?.ip || '').trim();
-  if (!ip) {
-    return res.status(400).json({ error: 'ip is required' });
+  const key = String(req.body?.key || req.body?.ip || '').trim();
+  if (!key) {
+    return res.status(400).json({ error: 'key is required' });
   }
-  const removed = await resetServerKeyUsageByIp(ip);
+  const removed = await resetServerKeyUsageByIp(key);
   return res.json({ ok: true, removed });
 });
 
