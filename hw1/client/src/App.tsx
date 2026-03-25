@@ -22,7 +22,7 @@ function useIsMobile() {
 }
 
 function App() {
-  const { messages, setMessages, isStreaming, error, sendMessage, stopStreaming, editAndResend, clearMessages } = useChat();
+  const { messages, setMessages, isStreaming, error, errorCode, sendMessage, stopStreaming, editAndResend, clearMessages } = useChat();
   const { settings, setSettings } = useSettings();
   const isMobile = useIsMobile();
 
@@ -32,6 +32,7 @@ function App() {
     const saved = localStorage.getItem('uiTheme');
     return saved === 'dark' ? 'dark' : 'light';
   });
+  const [keyQuotaNotice, setKeyQuotaNotice] = useState<string | null>(null);
 
   // Auto-close sidebars when switching to mobile
   useEffect(() => {
@@ -129,9 +130,55 @@ function App() {
     };
   }, [theme]);
 
+  useEffect(() => {
+    if (errorCode === 'SERVER_API_KEY_QUOTA_EXCEEDED' && error) {
+      setKeyQuotaNotice(error);
+      setSidebarOpen(true);
+    }
+  }, [errorCode, error]);
+
   return (
     <div className="flex h-screen overflow-hidden app-shell">
       <div className="flex w-full h-full">
+        {keyQuotaNotice && (
+          <div
+            style={{
+              position: 'fixed',
+              top: 16,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              zIndex: 60,
+              width: 'min(560px, calc(100vw - 24px))',
+              background: 'var(--warning-soft)',
+              border: '1px solid var(--warning-border)',
+              color: 'var(--warning)',
+              borderRadius: 12,
+              padding: 12,
+              boxShadow: 'var(--shadow-lg)',
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)',
+            }}
+          >
+            <div className="text-sm font-medium mb-1">Server API key quota reached</div>
+            <div className="text-xs mb-2" style={{ color: 'var(--text-main)' }}>{keyQuotaNotice}</div>
+            <div className="flex items-center gap-2">
+              <button
+                className="px-2.5 py-1.5 text-xs rounded-md"
+                style={{ background: 'var(--warning-border)', color: 'var(--warning)' }}
+                onClick={() => setSidebarOpen(true)}
+              >
+                Open settings
+              </button>
+              <button
+                className="px-2.5 py-1.5 text-xs rounded-md"
+                style={{ background: 'transparent', color: 'var(--text-muted)', border: '1px solid var(--line)' }}
+                onClick={() => setKeyQuotaNotice(null)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* ── Left sidebar ── */}
         {isMobile ? (

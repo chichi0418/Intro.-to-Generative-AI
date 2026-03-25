@@ -96,6 +96,7 @@ data: [DONE]
 | 切換模型 | 右側面板 → Model 下拉選單 |
 | System Prompt | 右側面板 → System Prompt 文字框 |
 | 調整參數 | 右側面板 → Temperature / Top P / Max Tokens 滑桿 |
+| 自訂 API Key | 右側面板 → API Keys（可填自己的 OpenAI / Anthropic / Google / xAI key） |
 | Streaming | 自動生效，文字逐字出現 |
 | 對話記憶 | 自動保留最近 20 則訊息傳給後端 |
 | 清除對話 | 輸入框右側「Clear」按鈕 |
@@ -121,10 +122,25 @@ data: [DONE]
 OPENAI_API_KEY=sk-...
 ANTHROPIC_API_KEY=sk-ant-...
 GOOGLE_API_KEY=AIza...
+X_API_KEY=xai-...
 PORT=3001
+SERVER_KEY_FREE_LIMIT=20
+SERVER_KEY_FREE_WINDOW_MS=86400000
+ADMIN_API_TOKEN=your-secret-token
+SUPABASE_DB_URL=postgresql://postgres:[YOUR-PASSWORD]@db.<project-ref>.supabase.co:5432/postgres
 ```
 
-沒有的 Key 留空即可，只要不切換到對應模型就不會報錯。
+沒有的 Key 留空即可，只要不切換到對應模型就不會報錯。  
+也可以不填 `.env`，直接在前端右側 Settings 的 `API Keys (Optional)` 填入自己的 key；前端會隨請求送出並優先使用。
+
+`SERVER_KEY_FREE_LIMIT` / `SERVER_KEY_FREE_WINDOW_MS` 可限制「使用伺服器 key 的免費次數」。  
+超過後會顯示通知，並要求使用者改填自己的 API key 才能繼續。
+
+若要查看每個 IP 用量後台，設定 `ADMIN_API_TOKEN`。  
+前端 Settings → `Admin Usage` 可輸入 token 查詢 `/api/admin/usage`。
+
+若要把 IP 用量持久化（server 重啟不清空），設定 `SUPABASE_DB_URL`。  
+有設定時會寫入 Supabase Postgres；未設定則 fallback 到記憶體。
 
 ---
 
@@ -144,7 +160,7 @@ PORT=3001
 1. 登入 [Render](https://render.com)，建立 New Web Service
 2. 連接 GitHub repo，Root Directory 設為 `server`
 3. Build Command: `npm install`，Start Command: `node index.js`
-4. Environment Variables 設定：`OPENAI_API_KEY`、`ANTHROPIC_API_KEY`、`GOOGLE_API_KEY`
+4. Environment Variables 設定：`OPENAI_API_KEY`、`ANTHROPIC_API_KEY`、`GOOGLE_API_KEY`、`X_API_KEY`、`SERVER_KEY_FREE_LIMIT`、`SERVER_KEY_FREE_WINDOW_MS`、`ADMIN_API_TOKEN`、`SUPABASE_DB_URL`
 
 ### 前端部署到 GitHub Pages
 1. 更新 `client/.env.production`，填入 Render 網址：
@@ -154,3 +170,5 @@ PORT=3001
 2. 在 GitHub repo → Settings → Secrets → Actions 新增 `VITE_API_URL`
 3. Push to `main` → GitHub Actions 自動 build + 部署
 4. 確認可以訪問：`https://chichi0418.github.io/Intro.-to-Generative-AI/`
+
+> GitHub Pages 前端不需要放 Supabase key；只需要 `VITE_API_URL` 指向 Render 後端即可。

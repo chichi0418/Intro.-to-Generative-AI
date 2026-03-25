@@ -1,16 +1,18 @@
 const OpenAI = require('openai');
 
-let client;
-function getClient() {
-  if (!client) client = new OpenAI({
-    apiKey: process.env.X_API_KEY,
+function getClient(userApiKey) {
+  const apiKey = userApiKey?.trim() || process.env.X_API_KEY || process.env.XAI_API_KEY;
+  if (!apiKey) {
+    throw new Error('Missing xAI API key. Set it in Settings or server .env (X_API_KEY).');
+  }
+  return new OpenAI({
+    apiKey,
     baseURL: 'https://api.x.ai/v1',
   });
-  return client;
 }
 
-async function streamChat({ messages, systemPrompt, model, temperature, topP, maxTokens }, res) {
-  const client = getClient();
+async function streamChat({ messages, systemPrompt, model, temperature, topP, maxTokens, apiKeys }, res) {
+  const client = getClient(apiKeys?.xai);
   const builtMessages = [];
 
   if (systemPrompt) {

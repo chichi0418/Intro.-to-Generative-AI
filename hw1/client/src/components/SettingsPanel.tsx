@@ -4,6 +4,8 @@ import type { Settings } from '../types';
 import { AVAILABLE_MODELS, PRESET_INSTRUCTIONS } from '../types';
 import { ModelSelector } from './ModelSelector';
 import { SystemInstructionPanel } from './SystemInstructionPanel';
+import { ApiKeyPanel } from './ApiKeyPanel';
+import { AdminUsagePanel } from './AdminUsagePanel';
 import { Slider } from './Slider';
 import { Tooltip } from './Tooltip';
 
@@ -39,8 +41,12 @@ function ProviderIcon({ provider }: { provider: string }) {
 export function SettingsPanel({ settings, onChange, onReset, onClose }: Props) {
   const [modelOpen, setModelOpen] = useState(false);
   const [systemPanelOpen, setSystemPanelOpen] = useState(false);
+  const [apiKeyPanelOpen, setApiKeyPanelOpen] = useState(false);
+  const [adminPanelOpen, setAdminPanelOpen] = useState(false);
 
   const currentModel = AVAILABLE_MODELS.find(m => m.id === settings.model);
+  const currentProvider = currentModel?.provider ?? null;
+  const isUsingOwnApiKey = currentProvider ? settings.apiKeys[currentProvider].trim().length > 0 : false;
   const activeInstruction = (settings.systemInstructions ?? []).find(i => i.id === settings.activeSystemInstructionId)
     ?? PRESET_INSTRUCTIONS.find(i => i.id === settings.activeSystemInstructionId);
 
@@ -66,6 +72,21 @@ export function SettingsPanel({ settings, onChange, onReset, onClose }: Props) {
           })}
           onActivate={id => onChange({ activeSystemInstructionId: id })}
           onClose={() => setSystemPanelOpen(false)}
+        />,
+        document.body
+      )}
+      {apiKeyPanelOpen && createPortal(
+        <ApiKeyPanel
+          apiKeys={settings.apiKeys}
+          currentProvider={currentProvider}
+          onChange={apiKeys => onChange({ apiKeys })}
+          onClose={() => setApiKeyPanelOpen(false)}
+        />,
+        document.body
+      )}
+      {adminPanelOpen && createPortal(
+        <AdminUsagePanel
+          onClose={() => setAdminPanelOpen(false)}
         />,
         document.body
       )}
@@ -163,6 +184,42 @@ export function SettingsPanel({ settings, onChange, onReset, onClose }: Props) {
           </p>
         </div>
 
+        <Divider />
+        <div className="px-4 py-3">
+          <Tooltip text="Set your provider API keys. Click to open panel.">
+            <button
+              className="flex items-center justify-between w-full text-left"
+              onClick={() => setApiKeyPanelOpen(true)}
+            >
+              <span className="text-sm" style={{ color: 'var(--text-main)' }}>API Keys</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </button>
+          </Tooltip>
+          <p className="text-xs mt-1" style={{ color: isUsingOwnApiKey ? 'var(--accent)' : 'var(--text-muted)' }}>
+            {currentProvider
+              ? (isUsingOwnApiKey ? 'Current model is using your API key' : 'Current model is using server API key')
+              : 'Unknown model provider'}
+          </p>
+        </div>
+        <Divider />
+        <div className="px-4 py-3">
+          <Tooltip text="View server API key usage per IP (admin token required).">
+            <button
+              className="flex items-center justify-between w-full text-left"
+              onClick={() => setAdminPanelOpen(true)}
+            >
+              <span className="text-sm" style={{ color: 'var(--text-main)' }}>Admin Usage</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </button>
+          </Tooltip>
+          <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
+            Check per-IP quota usage for server API keys.
+          </p>
+        </div>
         <Divider />
         <Tooltip text={"Controls randomness.\nHigher = more creative, lower = more deterministic."}>
           <Slider

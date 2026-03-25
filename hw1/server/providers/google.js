@@ -1,8 +1,15 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+function getClient(userApiKey) {
+  const apiKey = userApiKey?.trim() || process.env.GOOGLE_API_KEY;
+  if (!apiKey) {
+    throw new Error('Missing Google API key. Set it in Settings or server .env (GOOGLE_API_KEY).');
+  }
+  return new GoogleGenerativeAI(apiKey);
+}
 
-async function streamChat({ messages, systemPrompt, model, temperature, topP, maxTokens }, res) {
+async function streamChat({ messages, systemPrompt, model, temperature, topP, maxTokens, apiKeys }, res) {
+  const genAI = getClient(apiKeys?.google);
   const generationConfig = {
     temperature: temperature ?? 1,
     topP: topP ?? 1,

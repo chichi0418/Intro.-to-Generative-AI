@@ -26,6 +26,12 @@ export interface Settings {
   temperature: number;
   topP: number;
   maxTokens: number;
+  apiKeys: {
+    openai: string;
+    anthropic: string;
+    google: string;
+    xai: string;
+  };
 }
 
 export interface ModelInfo {
@@ -176,4 +182,10 @@ export const DEFAULT_SETTINGS: Settings = {
   temperature: 1,
   topP: 1,
   maxTokens: 2048,
+  apiKeys: {
+    openai: '',
+    anthropic: '',
+    google: '',
+    xai: '',
+  },
 };

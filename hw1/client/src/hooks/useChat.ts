@@ -6,11 +6,13 @@ export function useChat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [errorCode, setErrorCode] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   const sendMessage = useCallback(async (content: string, settings: Settings) => {
     if (isStreaming) return;
     setError(null);
+    setErrorCode(null);
 
     const controller = new AbortController();
     abortRef.current = controller;
@@ -43,7 +45,7 @@ export function useChat() {
         setIsStreaming(false);
         abortRef.current = null;
       },
-      (err) => { setError(err); setIsStreaming(false); abortRef.current = null; },
+      (err) => { setError(err.message); setErrorCode(err.code ?? null); setIsStreaming(false); abortRef.current = null; },
       controller.signal,
     );
   }, [isStreaming, messages]);
@@ -57,6 +59,7 @@ export function useChat() {
   const editAndResend = useCallback(async (index: number, newContent: string, settings: Settings) => {
     if (isStreaming) return;
     setError(null);
+    setErrorCode(null);
 
     const controller = new AbortController();
     abortRef.current = controller;
@@ -90,7 +93,7 @@ export function useChat() {
         setIsStreaming(false);
         abortRef.current = null;
       },
-      (err) => { setError(err); setIsStreaming(false); abortRef.current = null; },
+      (err) => { setError(err.message); setErrorCode(err.code ?? null); setIsStreaming(false); abortRef.current = null; },
       controller.signal,
     );
   }, [isStreaming, messages]);
@@ -98,7 +101,8 @@ export function useChat() {
   const clearMessages = useCallback(() => {
     setMessages([]);
     setError(null);
+    setErrorCode(null);
   }, []);
 
-  return { messages, setMessages, isStreaming, error, sendMessage, stopStreaming, editAndResend, clearMessages };
+  return { messages, setMessages, isStreaming, error, errorCode, sendMessage, stopStreaming, editAndResend, clearMessages };
 }

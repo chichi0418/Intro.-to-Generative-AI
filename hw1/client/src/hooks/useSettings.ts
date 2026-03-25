@@ -5,7 +5,17 @@ import { DEFAULT_SETTINGS } from '../types';
 function loadSettings(): Settings {
   try {
     const saved = localStorage.getItem('chatSettings');
-    if (saved) return { ...DEFAULT_SETTINGS, ...JSON.parse(saved) };
+    if (saved) {
+      const parsed = JSON.parse(saved) as Partial<Settings>;
+      return {
+        ...DEFAULT_SETTINGS,
+        ...parsed,
+        apiKeys: {
+          ...DEFAULT_SETTINGS.apiKeys,
+          ...(parsed.apiKeys ?? {}),
+        },
+      };
+    }
   } catch {
     // ignore
   }
@@ -17,7 +27,14 @@ export function useSettings() {
 
   function setSettings(update: Partial<Settings>) {
     setSettingsState(prev => {
-      const next = { ...prev, ...update };
+      const next = {
+        ...prev,
+        ...update,
+        apiKeys: {
+          ...prev.apiKeys,
+          ...(update.apiKeys ?? {}),
+        },
+      };
       localStorage.setItem('chatSettings', JSON.stringify(next));
       return next;
     });

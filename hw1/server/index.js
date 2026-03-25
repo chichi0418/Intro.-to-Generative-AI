@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const { rateLimit } = require('express-rate-limit');
 const chatRouter = require('./routes/chat');
+const adminRouter = require('./routes/admin');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -28,6 +29,7 @@ const chatLimiter = rateLimit({
 
 app.use(express.json());
 app.use('/api/chat', chatLimiter, chatRouter);
+app.use('/api/admin', adminRouter);
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 app.head('/api/health', (req, res) => res.sendStatus(200));

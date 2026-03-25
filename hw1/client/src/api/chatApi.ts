@@ -3,12 +3,17 @@ import { PRESET_INSTRUCTIONS } from '../types';
 
 const API_BASE = import.meta.env.VITE_API_URL ?? '';
 
+export interface ChatApiError {
+  message: string;
+  code?: string;
+}
+
 export async function sendChatStream(
   messages: Message[],
   settings: Settings,
   onDelta: (delta: string) => void,
   onDone: () => void,
-  onError: (err: string) => void,
+  onError: (err: ChatApiError) => void,
   signal?: AbortSignal,
 ): Promise<void> {
   let res: Response;
@@ -27,21 +32,21 @@ export async function sendChatStream(
         temperature: settings.temperature,
         topP: settings.topP,
         maxTokens: settings.maxTokens,
+        apiKeys: settings.apiKeys,
       }),
     });
   } catch (err) {
     if ((err as Error).name === 'AbortError') { onDone(); return; }
-    onError(String(err));
+    onError({ message: String(err) });
     return;
   }
 
   if (!res.ok) {
-    if (res.status === 429) {
-      const body = await res.json().catch(() => ({}));
-      onError(body.error ?? 'Rate limit exceeded. Please wait before sending more messages.');
-    } else {
-      onError(`HTTP error ${res.status}`);
-    }
+    const body = await res.json().catch(() => ({}));
+    onError({
+      message: body.error ?? `HTTP error ${res.status}`,
+      code: body.code,
+    });
     return;
   }
 
@@ -64,7 +69,7 @@ export async function sendChatStream(
         if (payload === '[DONE]') { onDone(); return; }
         try {
           const parsed = JSON.parse(payload);
-          if (parsed.error) { onError(parsed.error); return; }
+          if (parsed.error) { onError({ message: parsed.error, code: parsed.code }); return; }
           if (parsed.delta) onDelta(parsed.delta);
         } catch {
           // ignore malformed lines
@@ -73,7 +78,7 @@ export async function sendChatStream(
     }
   } catch (err) {
     if ((err as Error).name === 'AbortError') { onDone(); return; }
-    onError(String(err));
+    onError({ message: String(err) });
     return;
   }
 
