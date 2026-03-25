@@ -1,5 +1,5 @@
 const express = require('express');
-const { getServerKeyUsageSnapshot } = require('../lib/serverKeyQuota');
+const { getServerKeyUsageSnapshot, resetServerKeyUsageByIp } = require('../lib/serverKeyQuota');
 
 const router = express.Router();
 
@@ -28,6 +28,15 @@ function ensureAdminAuth(req, res, next) {
 router.get('/usage', ensureAdminAuth, async (req, res) => {
   const snapshot = await getServerKeyUsageSnapshot();
   res.json(snapshot);
+});
+
+router.post('/usage/reset', ensureAdminAuth, async (req, res) => {
+  const ip = String(req.body?.ip || '').trim();
+  if (!ip) {
+    return res.status(400).json({ error: 'ip is required' });
+  }
+  const removed = await resetServerKeyUsageByIp(ip);
+  return res.json({ ok: true, removed });
 });
 
 module.exports = router;

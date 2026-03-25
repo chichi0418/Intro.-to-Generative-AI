@@ -226,9 +226,31 @@ async function getServerKeyUsageSnapshot() {
   }
 }
 
+async function resetInDb(ip) {
+  const pool = getDbPool();
+  const result = await pool.query('DELETE FROM server_key_usage WHERE ip = $1', [ip]);
+  return result.rowCount > 0;
+}
+
+function resetInMemory(ip) {
+  return usageByIp.delete(ip);
+}
+
+async function resetServerKeyUsageByIp(ip) {
+  try {
+    const dbReady = await ensureTable();
+    if (!dbReady) return resetInMemory(ip);
+    return await resetInDb(ip);
+  } catch (err) {
+    console.error('Reset usage DB error, fallback to memory:', err.message);
+    return resetInMemory(ip);
+  }
+}
+
 module.exports = {
   SERVER_KEY_FREE_LIMIT,
   SERVER_KEY_FREE_WINDOW_MS,
   consumeServerKeyQuota,
   getServerKeyUsageSnapshot,
+  resetServerKeyUsageByIp,
 };

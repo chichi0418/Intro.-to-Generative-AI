@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { fetchServerKeyUsage } from '../api/adminApi';
+import { fetchServerKeyUsage, resetServerKeyUsage } from '../api/adminApi';
 import type { ServerUsageSnapshot } from '../api/adminApi';
 
 interface Props {
@@ -15,6 +15,7 @@ export function AdminUsagePanel({ onClose }: Props) {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 640);
   const [token, setToken] = useState(() => localStorage.getItem('adminApiToken') ?? '');
   const [loading, setLoading] = useState(false);
+  const [resettingIp, setResettingIp] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [snapshot, setSnapshot] = useState<ServerUsageSnapshot | null>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -134,6 +135,7 @@ export function AdminUsagePanel({ onClose }: Props) {
                 <th className="text-left p-2" style={{ color: 'var(--text-muted)', borderBottom: '1px solid var(--bg-soft-hover)' }}>Status</th>
                 <th className="text-left p-2" style={{ color: 'var(--text-muted)', borderBottom: '1px solid var(--bg-soft-hover)' }}>Last Seen</th>
                 <th className="text-left p-2" style={{ color: 'var(--text-muted)', borderBottom: '1px solid var(--bg-soft-hover)' }}>Reset At</th>
+                <th className="text-left p-2" style={{ color: 'var(--text-muted)', borderBottom: '1px solid var(--bg-soft-hover)' }}>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -154,6 +156,28 @@ export function AdminUsagePanel({ onClose }: Props) {
                   </td>
                   <td className="p-2" style={{ color: 'var(--text-main)', borderBottom: '1px solid var(--bg-soft-hover)' }}>{formatDate(r.lastSeenAt)}</td>
                   <td className="p-2" style={{ color: 'var(--text-main)', borderBottom: '1px solid var(--bg-soft-hover)' }}>{formatDate(r.resetAt)}</td>
+                  <td className="p-2" style={{ borderBottom: '1px solid var(--bg-soft-hover)' }}>
+                    <button
+                      disabled={resettingIp === r.ip || loading}
+                      className="px-2 py-1 rounded-md text-xs"
+                      style={{ color: 'var(--accent)', border: '1px solid var(--accent-border)', background: 'var(--accent-soft)' }}
+                      onClick={async () => {
+                        if (!token.trim()) { setError('Please enter admin token'); return; }
+                        setError(null);
+                        setResettingIp(r.ip);
+                        try {
+                          await resetServerKeyUsage(token.trim(), r.ip);
+                          await loadUsage();
+                        } catch (err) {
+                          setError((err as Error).message);
+                        } finally {
+                          setResettingIp(null);
+                        }
+                      }}
+                    >
+                      {resettingIp === r.ip ? 'Resetting...' : 'Reset'}
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>

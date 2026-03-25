@@ -33,3 +33,19 @@ export async function fetchServerKeyUsage(token: string): Promise<ServerUsageSna
 
   return body as ServerUsageSnapshot;
 }
+
+export async function resetServerKeyUsage(token: string, ip: string): Promise<void> {
+  const res = await fetch(`${API_BASE}/api/admin/usage/reset`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ ip }),
+  });
+
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(body.error ?? `HTTP ${res.status}`);
+  }
+}

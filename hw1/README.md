@@ -139,6 +139,7 @@ SUPABASE_POOLER_URL=postgresql://postgres.<project-ref>:[YOUR-PASSWORD]@aws-0-<r
 
 若要查看每個 IP 用量後台，設定 `ADMIN_API_TOKEN`。  
 前端 Settings → `Admin Usage` 可輸入 token 查詢 `/api/admin/usage`。
+在 `Admin Usage` 表格可對單一 IP 按 `Reset`，重設其已使用次數。
 
 若要把 IP 用量持久化（server 重啟不清空），設定 `SUPABASE_DB_URL`。  
 有設定時會寫入 Supabase Postgres；未設定則 fallback 到記憶體。
