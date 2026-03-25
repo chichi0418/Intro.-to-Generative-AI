@@ -128,6 +128,7 @@ SERVER_KEY_FREE_LIMIT=20
 SERVER_KEY_FREE_WINDOW_MS=86400000
 ADMIN_API_TOKEN=your-secret-token
 SUPABASE_DB_URL=postgresql://postgres:[YOUR-PASSWORD]@db.<project-ref>.supabase.co:5432/postgres
+SUPABASE_POOLER_URL=postgresql://postgres.<project-ref>:[YOUR-PASSWORD]@aws-0-<region>.pooler.supabase.com:6543/postgres
 ```
 
 沒有的 Key 留空即可，只要不切換到對應模型就不會報錯。  
@@ -141,6 +142,9 @@ SUPABASE_DB_URL=postgresql://postgres:[YOUR-PASSWORD]@db.<project-ref>.supabase.
 
 若要把 IP 用量持久化（server 重啟不清空），設定 `SUPABASE_DB_URL`。  
 有設定時會寫入 Supabase Postgres；未設定則 fallback 到記憶體。
+
+若 Render 連線出現 `ENETUNREACH`（常見於 IPv6 路徑），請改設定 `SUPABASE_POOLER_URL`（Supabase Connection Pooling）。
+程式會優先使用 `SUPABASE_POOLER_URL`，再 fallback 到 `SUPABASE_DB_URL`。
 
 ---
 
@@ -160,7 +164,7 @@ SUPABASE_DB_URL=postgresql://postgres:[YOUR-PASSWORD]@db.<project-ref>.supabase.
 1. 登入 [Render](https://render.com)，建立 New Web Service
 2. 連接 GitHub repo，Root Directory 設為 `server`
 3. Build Command: `npm install`，Start Command: `node index.js`
-4. Environment Variables 設定：`OPENAI_API_KEY`、`ANTHROPIC_API_KEY`、`GOOGLE_API_KEY`、`X_API_KEY`、`SERVER_KEY_FREE_LIMIT`、`SERVER_KEY_FREE_WINDOW_MS`、`ADMIN_API_TOKEN`、`SUPABASE_DB_URL`
+4. Environment Variables 設定：`OPENAI_API_KEY`、`ANTHROPIC_API_KEY`、`GOOGLE_API_KEY`、`X_API_KEY`、`SERVER_KEY_FREE_LIMIT`、`SERVER_KEY_FREE_WINDOW_MS`、`ADMIN_API_TOKEN`、`SUPABASE_POOLER_URL`（建議）或 `SUPABASE_DB_URL`
 
 ### 前端部署到 GitHub Pages
 1. 更新 `client/.env.production`，填入 Render 網址：
