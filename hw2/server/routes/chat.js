@@ -10,7 +10,7 @@ const {
   consumeServerKeyQuota,
 } = require('../lib/serverKeyQuota');
 const { buildSystemPromptWithMemory, extractAndSaveMemories } = require('../lib/memoryHelper');
-const { resolveModel, detectToolIntent } = require('../lib/autoRouter');
+const { resolveModel } = require('../lib/autoRouter');
 const { getAllTools } = require('../lib/tools/index');
 const { optionalAuth } = require('../lib/authMiddleware');
 
@@ -34,14 +34,6 @@ function hasServerApiKey(provider) {
   return false;
 }
 
-function extractMessageText(content) {
-  if (typeof content === 'string') return content;
-  if (!Array.isArray(content)) return '';
-  return content
-    .filter(p => p?.type === 'text' && typeof p.text === 'string')
-    .map(p => p.text)
-    .join(' ');
-}
 
 router.post('/', optionalAuth, async (req, res) => {
   const {
@@ -121,10 +113,7 @@ router.post('/', optionalAuth, async (req, res) => {
   }
 
   const availableTools = enableTools ? getAllTools() : [];
-  const lastMessage = messages[messages.length - 1];
-  const lastText = extractMessageText(lastMessage?.content);
-  const shouldUseTools = Boolean(enableTools && availableTools.length > 0 && detectToolIntent(lastText));
-  const tools = shouldUseTools ? availableTools : [];
+  const tools = availableTools;
   const params = { messages, systemPrompt, model, temperature, topP, maxTokens, apiKeys, tools };
 
   try {
