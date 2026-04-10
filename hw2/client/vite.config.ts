@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
-  base: '/Intro.-to-Generative-AI/hw1/',
+  base: '/Intro.-to-Generative-AI/hw2/',
   plugins: [react(), tailwindcss()],
   server: {
     proxy: {
