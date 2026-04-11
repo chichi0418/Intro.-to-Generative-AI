@@ -31,12 +31,6 @@ function buildMessages(messages, systemPrompt) {
   return built;
 }
 
-function emitChunkedText(res, text, chunkSize = 20) {
-  if (!text) return;
-  for (let i = 0; i < text.length; i += chunkSize) {
-    res.write(`data: ${JSON.stringify({ delta: text.slice(i, i + chunkSize) })}\n\n`);
-  }
-}
 
 async function streamChat({ messages, systemPrompt, model, temperature, topP, maxTokens, apiKeys }, res) {
   const client = getClient(apiKeys?.xai);
@@ -69,7 +63,7 @@ async function streamChatWithTools({ messages, systemPrompt, model, temperature,
   while (iterations < 10) {
     iterations++;
 
-    const response = await client.chat.completions.create({
+    const stream = await client.chat.completions.create({
       model,
       messages: builtMessages,
       tools: toolDefs,
@@ -77,24 +71,56 @@ async function streamChatWithTools({ messages, systemPrompt, model, temperature,
       max_tokens: maxTokens ?? 2048,
       temperature: temperature ?? 1,
       top_p: topP ?? 1,
+      stream: true,
     });
 
-    const msg = response.choices[0].message;
-    builtMessages.push(msg);
+    let textContent = '';
+    const toolCallsMap = {};
 
-    if (!msg.tool_calls || msg.tool_calls.length === 0) {
-      const text = msg.content ?? '';
-      emitChunkedText(res, text);
+    for await (const chunk of stream) {
+      const delta = chunk.choices[0]?.delta;
+      if (!delta) continue;
+
+      if (delta.content) {
+        textContent += delta.content;
+        res.write(`data: ${JSON.stringify({ delta: delta.content })}\n\n`);
+      }
+
+      if (delta.tool_calls) {
+        for (const tc of delta.tool_calls) {
+          if (!toolCallsMap[tc.index]) {
+            toolCallsMap[tc.index] = { id: '', name: '', argsStr: '' };
+          }
+          if (tc.id) toolCallsMap[tc.index].id = tc.id;
+          if (tc.function?.name) toolCallsMap[tc.index].name += tc.function.name;
+          if (tc.function?.arguments) toolCallsMap[tc.index].argsStr += tc.function.arguments;
+        }
+      }
+    }
+
+    const toolCalls = Object.values(toolCallsMap);
+
+    if (toolCalls.length === 0) {
       break;
     }
 
-    for (const tc of msg.tool_calls) {
+    builtMessages.push({
+      role: 'assistant',
+      content: textContent || null,
+      tool_calls: toolCalls.map(tc => ({
+        id: tc.id,
+        type: 'function',
+        function: { name: tc.name, arguments: tc.argsStr },
+      })),
+    });
+
+    for (const tc of toolCalls) {
       let args = {};
-      try { args = JSON.parse(tc.function.arguments); } catch {}
-      res.write(`data: ${JSON.stringify({ toolCall: { name: tc.function.name, args } })}\n\n`);
-      const result = await executeTool(tc.function.name, args);
+      try { args = JSON.parse(tc.argsStr); } catch {}
+      res.write(`data: ${JSON.stringify({ toolCall: { name: tc.name, args } })}\n\n`);
+      const result = await executeTool(tc.name, args);
       const resultStr = JSON.stringify(result).slice(0, 2000);
-      res.write(`data: ${JSON.stringify({ toolResult: { name: tc.function.name, result } })}\n\n`);
+      res.write(`data: ${JSON.stringify({ toolResult: { name: tc.name, result } })}\n\n`);
       builtMessages.push({ role: 'tool', tool_call_id: tc.id, content: resultStr });
     }
   }
